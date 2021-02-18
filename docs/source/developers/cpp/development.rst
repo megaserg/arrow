@@ -142,6 +142,7 @@ in a new out-of-source CMake build directory like so:
      -DARROW_BUILD_TESTS=ON \
      -DARROW_BUILD_UTILITIES=ON \
      -DARROW_S3=ON \
+     -DARROW_GCS=ON \
      -DARROW_WITH_BROTLI=ON \
      -DARROW_WITH_BZ2=ON \
      -DARROW_WITH_LZ4=ON \

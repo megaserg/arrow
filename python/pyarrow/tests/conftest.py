@@ -58,6 +58,7 @@ groups = [
     'parquet',
     'plasma',
     's3',
+    'gcs',
     'tensorflow',
     'flight',
     'slow',
@@ -79,6 +80,7 @@ defaults = {
     'parquet': False,
     'plasma': False,
     's3': False,
+    'gcs': False,
     'tensorflow': False,
     'flight': False,
     'slow': False,
@@ -148,6 +150,12 @@ except ImportError:
 try:
     from pyarrow.fs import S3FileSystem  # noqa
     defaults['s3'] = True
+except ImportError:
+    pass
+
+try:
+    from pyarrow.fs import GCSFileSystem  # noqa
+    defaults['gcs'] = True
 except ImportError:
     pass
 
@@ -270,6 +278,39 @@ def s3_server(s3_connection):
             proc = subprocess.Popen(args, env=env)
         except OSError:
             pytest.skip('`minio` command cannot be located')
+        else:
+            yield proc
+        finally:
+            if proc is not None:
+                proc.kill()
+
+
+@pytest.mark.gcs
+@pytest.fixture(scope='session')
+def gcs_connection():
+    host, port = 'localhost', find_free_port()
+    return host, port
+
+
+@pytest.fixture(scope='session')
+def gcs_server(gcs_connection):
+    host, port = gcs_connection
+
+    # address = '{}:{}'.format(host, port)
+
+    with TemporaryDirectory() as tempdir:
+        # args = ['minio', '--compat', 'server', '--quiet', '--address',
+        # address, tempdir]
+        args = ["fake-gcs-server", "-host", host, "-port", str(port),
+                "-filesystem-root", tempdir, "-scheme", "http"]
+        # args = ["/usr/bin/docker", "run", "-i", "--rm", "-p",
+        # str(port) + ":4443", "fsouza/fake-gcs-server:latest", "-scheme",
+        # "http"]
+        proc = None
+        try:
+            proc = subprocess.Popen(args)
+        except OSError:
+            pytest.skip('`fake-gcs-server` command cannot be located')
         else:
             yield proc
         finally:

@@ -51,6 +51,12 @@ except ImportError:
 else:
     initialize_s3()
 
+try:
+    from pyarrow._gcsfs import GCSFileSystem, initialize_gcs, finalize_gcs  # noqa
+except ImportError:
+    _not_imported.append("GCSFileSystem")
+else:
+    initialize_gcs()
 
 def __getattr__(name):
     if name in _not_imported:

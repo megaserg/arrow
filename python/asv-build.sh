@@ -54,6 +54,7 @@ cmake -GNinja \
       -DARROW_PYTHON=on \
       -DARROW_PLASMA=on \
       -DARROW_S3=on \
+      -DARROW_GCS=on \
       -DARROW_BUILD_TESTS=off \
       ..
 cmake --build . --target install

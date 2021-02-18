@@ -372,6 +372,15 @@ else()
     )
 endif()
 
+if(DEFINED ENV{ARROW_GCSSDK_URL})
+  set(GCSSDK_SOURCE_URL "$ENV{ARROW_GCSSDK_URL}")
+else()
+  set_urls(
+    GCSSDK_SOURCE_URL
+    "https://github.com/googleapis/google-cloud-cpp/archive/${ARROW_GCSSDK_BUILD_VERSION}.tar.gz"
+    )
+endif()
+
 if(DEFINED ENV{ARROW_BOOST_URL})
   set(BOOST_SOURCE_URL "$ENV{ARROW_BOOST_URL}")
 else()
@@ -874,11 +883,12 @@ endif()
 
 # - Gandiva has a compile-time (header-only) dependency on Boost, not runtime.
 # - Tests need Boost at runtime.
-# - S3FS and Flight benchmarks need Boost at runtime.
+# - S3FS, GCSFS, and Flight benchmarks need Boost at runtime.
 if(ARROW_BUILD_INTEGRATION
    OR ARROW_BUILD_TESTS
    OR (ARROW_FLIGHT AND ARROW_BUILD_BENCHMARKS)
    OR (ARROW_S3 AND ARROW_BUILD_BENCHMARKS)
+   OR (ARROW_GCS AND ARROW_BUILD_BENCHMARKS)
    OR (ARROW_PARQUET AND PARQUET_REQUIRES_BOOST))
   set(ARROW_BOOST_REQUIRED TRUE)
   set(ARROW_BOOST_REQUIRE_LIBRARY TRUE)
@@ -1053,7 +1063,7 @@ if(BREW_BIN AND NOT OPENSSL_ROOT_DIR)
 endif()
 
 set(ARROW_USE_OPENSSL OFF)
-if(PARQUET_REQUIRE_ENCRYPTION OR ARROW_FLIGHT OR ARROW_S3)
+if(PARQUET_REQUIRE_ENCRYPTION OR ARROW_FLIGHT OR ARROW_S3 OR ARROW_GCS)
   # OpenSSL is required
   if(ARROW_OPENSSL_USE_SHARED)
     # Find shared OpenSSL libraries.
@@ -2920,6 +2930,94 @@ if(ARROW_S3)
                           PROPERTIES INTERFACE_LINK_LIBRARIES
                                      "-pthread;pthread;-framework CoreFoundation")
   endif()
+endif()
+
+# ----------------------------------------------------------------------
+# GCS SDK for C++
+
+#macro(build_gcssdk)
+#  message("Building GCS C++ SDK from source")
+#
+#  set(GCSSDK_PREFIX "${CMAKE_CURRENT_BINARY_DIR}/gcssdk_ep-install")
+#  set(GCSSDK_INCLUDE_DIR "${GCSSDK_PREFIX}/include")
+#
+#  set(GCSSDK_BUILD_TYPE Release)
+#
+##  cmake -H. -Bcmake-out
+##  cmake --build cmake-out --target install
+#
+## cmake_minimum_required(VERSION 3.5)
+## find_package(storage_client REQUIRED)
+## add_executable(my_program my_program.cc)
+## target_link_libraries(my_program storage_client)
+#
+#
+#  set(GCSSDK_CMAKE_ARGS
+#      -H.
+#      -Bcmake-out
+#      -DCMAKE_INSTALL_LIBDIR=lib
+#      "-DCMAKE_C_FLAGS=${EP_C_FLAGS}"
+#      "-DCMAKE_INSTALL_PREFIX=${GCSSDK_PREFIX}")
+#
+#  set(
+#    GCSSDK_CORE_SHARED_LIB
+#    "${GCSSDK_PREFIX}/lib/${CMAKE_SHARED_LIBRARY_PREFIX}gcs-cpp-sdk-core${CMAKE_SHARED_LIBRARY_SUFFIX}"
+#    )
+#  set(
+#    GCSSDK_S3_SHARED_LIB
+#    "${GCSSDK_PREFIX}/lib/${CMAKE_SHARED_LIBRARY_PREFIX}gcs-cpp-sdk-s3${CMAKE_SHARED_LIBRARY_SUFFIX}"
+#    )
+#  set(GCSSDK_SHARED_LIBS "${GCSSDK_CORE_SHARED_LIB}" "${GCSSDK_S3_SHARED_LIB}")
+#
+#  externalproject_add(gcssdk_ep
+#                      ${EP_LOG_OPTIONS}
+#                      URL ${GCSSDK_SOURCE_URL}
+#                      CMAKE_ARGS ${GCSSDK_CMAKE_ARGS}
+#                      BUILD_BYPRODUCTS ${GCSSDK_SHARED_LIBS})
+#
+#  file(MAKE_DIRECTORY ${GCSSDK_INCLUDE_DIR})
+#
+#  add_dependencies(toolchain gcssdk_ep)
+#  set(GCSSDK_LINK_LIBRARIES ${GCSSDK_SHARED_LIBS})
+#  set(GCSSDK_VENDORED TRUE)
+#endmacro()
+
+if(ARROW_GCS)
+
+  # Need to customize the find_package() call, so cannot call resolve_dependency()
+#  if(GCSSDK_SOURCE STREQUAL "AUTO")
+#    find_package(GCSSDK COMPONENTS config s3 transfer)
+#    if(NOT GCSSDK_FOUND)
+#      build_gcssdk()
+#    endif()
+#  elseif(GCSSDK_SOURCE STREQUAL "BUNDLED")
+#    build_gcssdk()
+#  elseif(GCSSDK_SOURCE STREQUAL "SYSTEM")
+#    find_package(GCSSDK REQUIRED COMPONENTS config s3 transfer)
+#  endif()
+
+#  build_gcssdk()
+
+  set(GCSSDK_INCLUDE_DIR "/usr/local/include")
+  # set(GCSSDK_LINK_LIBRARIES "/usr/local/lib/libstorage_client.so;/usr/local/lib/libgoogle_cloud_cpp_common.so")
+  set(GCSSDK_LINK_LIBRARIES "/usr/local/lib/libgoogle_cloud_cpp_common.so;/usr/local/lib/libstorage_client.so;/usr/local/lib/libabsl_bad_variant_access.so")
+
+  # find_package(google_cloud_cpp_common REQUIRED)
+  # find_package(storage_client REQUIRED)
+
+  include_directories(SYSTEM ${GCSSDK_INCLUDE_DIR})
+  message(STATUS "Found GCS SDK headers: ${GCSSDK_INCLUDE_DIR}")
+  message(STATUS "Found GCS SDK libraries: ${GCSSDK_LINK_LIBRARIES}")
+
+#  if(APPLE)
+#    # CoreFoundation's path is hardcoded in the CMake files provided by
+#    # gcs-sdk-cpp to use the MacOSX SDK provided by XCode which makes
+#    # XCode a hard dependency. Command Line Tools is often used instead
+#    # of the full XCode suite, so let the linker to find it.
+#    set_target_properties(GCS::gcs-c-common
+#                          PROPERTIES INTERFACE_LINK_LIBRARIES
+#                                     "-pthread;pthread;-framework CoreFoundation")
+#  endif()
 endif()
 
 message(STATUS "All bundled static libraries: ${ARROW_BUNDLED_STATIC_LIBS}")

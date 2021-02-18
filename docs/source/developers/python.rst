@@ -93,6 +93,7 @@ The test groups currently include:
 * ``parquet``: Apache Parquet tests
 * ``plasma``: Plasma Object Store tests
 * ``s3``: Tests for Amazon S3
+* ``gcs``: Tests for Google Cloud Storage
 * ``tensorflow``: Tests that involve TensorFlow
 * ``flight``: Flight RPC tests
 

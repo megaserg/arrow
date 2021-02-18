@@ -144,6 +144,10 @@ Example how you can read contents from a S3 bucket::
    See the `AWS docs <https://docs.aws.amazon.com/sdk-for-cpp/v1/developer-guide/credentials.html>`__
    for the different ways to configure the AWS credentials.
 
+GCS
+---
+
+TODO(megaserg): write up some examples.
 
 Hadoop File System (HDFS)
 -------------------------

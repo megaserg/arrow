@@ -99,3 +99,5 @@ powershell.exe -Command "Start-Process clcache-server"
 if "%ARROW_S3%" == "ON" (
     appveyor DownloadFile https://dl.min.io/server/minio/release/windows-amd64/minio.exe -FileName C:\Windows\Minio.exe || exit /B
 )
+
+@rem TODO(megaserg): Download fake-gcs-server or something

@@ -42,6 +42,7 @@ python -c "
 import pyarrow
 import pyarrow._hdfs
 import pyarrow._s3fs
+import pyarrow._gcsfs
 import pyarrow.csv
 import pyarrow.dataset
 import pyarrow.flight

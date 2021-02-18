@@ -321,7 +321,8 @@ cdef class FileSystem(_Weakrefable):
         """
         Create a new FileSystem from URI or Path.
 
-        Recognized URI schemes are "file", "mock", "s3fs", "hdfs" and "viewfs".
+        Recognized URI schemes are "file", "mock", "s3fs", "gcsfs", "hdfs"
+        and "viewfs".
         In addition, the argument can be a pathlib.Path object, or a string
         describing an absolute local path.
 
@@ -364,13 +365,16 @@ cdef class FileSystem(_Weakrefable):
         elif typ == 's3':
             from pyarrow._s3fs import S3FileSystem
             self = S3FileSystem.__new__(S3FileSystem)
+        elif typ == 'GCS':
+            from pyarrow._gcsfs import GCSFileSystem
+            self = GCSFileSystem.__new__(GCSFileSystem)
         elif typ == 'hdfs':
             from pyarrow._hdfs import HadoopFileSystem
             self = HadoopFileSystem.__new__(HadoopFileSystem)
         elif typ.startswith('py::'):
             self = PyFileSystem.__new__(PyFileSystem)
         else:
-            raise TypeError('Cannot wrap FileSystem pointer')
+            raise TypeError('Cannot wrap FileSystem pointer for: ' + typ)
 
         self.init(sp)
         return self

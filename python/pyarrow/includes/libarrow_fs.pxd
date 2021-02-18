@@ -170,6 +170,37 @@ cdef extern from "arrow/filesystem/api.h" namespace "arrow::fs" nogil:
         const CS3GlobalOptions& options)
     cdef CStatus CFinalizeS3 "arrow::fs::FinalizeS3"()
 
+    ctypedef enum CGCSLogLevel "arrow::fs::GCSLogLevel":
+        CGCSLogLevel_Off "arrow::fs::GCSLogLevel::Off"
+        CGCSLogLevel_Fatal "arrow::fs::GCSLogLevel::Fatal"
+        CGCSLogLevel_Error "arrow::fs::GCSLogLevel::Error"
+        CGCSLogLevel_Warn "arrow::fs::GCSLogLevel::Warn"
+        CGCSLogLevel_Info "arrow::fs::GCSLogLevel::Info"
+        CGCSLogLevel_Debug "arrow::fs::GCSLogLevel::Debug"
+        CGCSLogLevel_Trace "arrow::fs::GCSLogLevel::Trace"
+
+    cdef struct CGCSGlobalOptions "arrow::fs::GCSGlobalOptions":
+        CGCSLogLevel log_level
+
+    cdef cppclass CGCSOptions "arrow::fs::GCSOptions":
+        c_string region
+        c_string endpoint_override
+        c_string scheme
+        c_bool background_writes
+        c_bool Equals(const CGCSOptions& other)
+
+        @staticmethod
+        CGCSOptions Defaults()
+
+    cdef cppclass CGCSFileSystem "arrow::fs::GCSFileSystem"(CFileSystem):
+        @staticmethod
+        CResult[shared_ptr[CGCSFileSystem]] Make(const CGCSOptions& options)
+        CGCSOptions options()
+
+    cdef CStatus CInitializeGCS "arrow::fs::InitializeGCS"(
+        const CGCSGlobalOptions& options)
+    cdef CStatus CFinalizeGCS "arrow::fs::FinalizeGCS"()
+
     cdef cppclass CHdfsOptions "arrow::fs::HdfsOptions":
         HdfsConnectionConfig connection_config
         int32_t buffer_size

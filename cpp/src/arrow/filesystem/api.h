@@ -26,3 +26,6 @@
 #ifdef ARROW_S3
 #include "arrow/filesystem/s3fs.h"  // IWYU pragma: export
 #endif
+#ifdef ARROW_GCS
+#include "arrow/filesystem/gcsfs.h"  // IWYU pragma: export
+#endif

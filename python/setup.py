@@ -149,6 +149,8 @@ class build_ext(_build_ext):
 
         self.with_s3 = strtobool(
             os.environ.get('PYARROW_WITH_S3', '0'))
+        self.with_gcs = strtobool(
+            os.environ.get('PYARROW_WITH_GCS', '0'))
         self.with_hdfs = strtobool(
             os.environ.get('PYARROW_WITH_HDFS', '0'))
         self.with_cuda = strtobool(
@@ -197,6 +199,7 @@ class build_ext(_build_ext):
         '_orc',
         '_plasma',
         '_s3fs',
+        '_gcsfs',
         '_hdfs',
         'gandiva']
 
@@ -252,6 +255,7 @@ class build_ext(_build_ext):
             append_cmake_bool(self.with_parquet, 'PYARROW_BUILD_PARQUET')
             append_cmake_bool(self.with_plasma, 'PYARROW_BUILD_PLASMA')
             append_cmake_bool(self.with_s3, 'PYARROW_BUILD_S3')
+            append_cmake_bool(self.with_gcs, 'PYARROW_BUILD_GCS')
             append_cmake_bool(self.with_hdfs, 'PYARROW_BUILD_HDFS')
             append_cmake_bool(self.with_tensorflow, 'PYARROW_USE_TENSORFLOW')
             append_cmake_bool(self.bundle_arrow_cpp,
@@ -412,6 +416,8 @@ class build_ext(_build_ext):
         if name == '_flight' and not self.with_flight:
             return True
         if name == '_s3fs' and not self.with_s3:
+            return True
+        if name == '_gcsfs' and not self.with_gcs:
             return True
         if name == '_hdfs' and not self.with_hdfs:
             return True

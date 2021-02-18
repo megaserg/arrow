@@ -196,6 +196,8 @@ def _apply_options(cmd, options):
               "it will toggle required options")
 @click.option("--with-s3", default=None, type=BOOL,
               help="Build Arrow with S3 support.")
+@click.option("--with-gcs", default=None, type=BOOL,
+              help="Build Arrow with GCS support.")
 # Compressions
 @click.option("--with-brotli", default=None, type=BOOL,
               help="Build Arrow with brotli compression.")

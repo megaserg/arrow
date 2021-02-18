@@ -71,6 +71,10 @@ if(ARROW_S3)
   endif()
 endif()
 
+if(ARROW_GCS)
+  add_arrow_test(gcsfs_test EXTRA_LABELS filesystem)
+endif()
+
 if(ARROW_HDFS)
   add_arrow_test(hdfs_test EXTRA_LABELS filesystem)
 endif()

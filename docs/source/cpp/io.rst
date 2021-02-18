@@ -81,5 +81,6 @@ and modification time, is made available.
 
 Concrete implementations are available for
 :class:`local filesystem access <LocalFileSystem>`,
-:class:`HDFS <HadoopFileSystem>` and
-:class:`Amazon S3-compatible storage <S3FileSystem>`.
+:class:`HDFS <HadoopFileSystem>`,
+:class:`Amazon S3-compatible storage <S3FileSystem>` and
+:class:`Google Cloud Storage <GCSFileSystem>`.

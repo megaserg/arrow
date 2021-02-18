@@ -212,6 +212,7 @@ outputs:
         - pyarrow.plasma   # [unix]
         - pyarrow.fs
         - pyarrow._s3fs
+        - pyarrow._gcsfs
         - pyarrow._hdfs
         # We can only test importing cuda package but cannot run when a
         # CUDA device is not available, for instance, when building from CI.

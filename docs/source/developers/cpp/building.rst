@@ -179,6 +179,7 @@ boolean flags to ``cmake``.
   this option also enables ``ARROW_COMPUTE``, ``ARROW_CSV``, ``ARROW_DATASET``,
   ``ARROW_FILESYSTEM``, ``ARROW_HDFS``, and ``ARROW_JSON``.
 * ``-DARROW_S3=ON``: Support for Amazon S3-compatible filesystems
+* ``-DARROW_GCS=ON``: Support for Google Cloud Storage filesystem
 * ``-DARROW_WITH_BZ2=ON``: Build support for BZ2 compression
 * ``-DARROW_WITH_ZLIB=ON``: Build support for zlib (gzip) compression
 * ``-DARROW_WITH_LZ4=ON``: Build support for lz4 compression

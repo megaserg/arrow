@@ -27,6 +27,9 @@
 #ifdef ARROW_S3
 #include "arrow/filesystem/s3fs.h"
 #endif
+#ifdef ARROW_GCS
+#include "arrow/filesystem/gcsfs.h"
+#endif
 #include "arrow/filesystem/localfs.h"
 #include "arrow/filesystem/mockfs.h"
 #include "arrow/filesystem/path_util.h"
@@ -557,6 +560,16 @@ Result<std::shared_ptr<FileSystem>> FileSystemFromUriReal(const Uri& uri,
     return s3fs;
 #else
     return Status::NotImplemented("Got S3 URI but Arrow compiled without S3 support");
+#endif
+  }
+  if (scheme == "gs" || scheme == "gcs") {
+#ifdef ARROW_GCS
+    RETURN_NOT_OK(EnsureGCSInitialized());
+    ARROW_ASSIGN_OR_RAISE(auto options, GCSOptions::FromUri(uri, out_path));
+    ARROW_ASSIGN_OR_RAISE(auto gcsfs, GCSFileSystem::Make(options));
+    return gcsfs;
+#else
+    return Status::NotImplemented("Got GCS URI but Arrow compiled without GCS support");
 #endif
   }
 

@@ -1742,6 +1742,9 @@ def test_open_dataset_from_s3_with_filesystem_uri(s3_connection, s3_server):
     assert str(exc.value) == error.format('File', path, uri)
 
 
+# TODO(megaserg): analogous tests for GCS
+
+
 @pytest.mark.parquet
 def test_open_dataset_from_fsspec(tempdir):
     table, path = _create_single_file(tempdir)

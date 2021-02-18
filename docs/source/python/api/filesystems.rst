@@ -40,6 +40,7 @@ Concrete Subclasses
 
    LocalFileSystem
    S3FileSystem
+   GCSFileSystem
    HadoopFileSystem
    SubTreeFileSystem
 

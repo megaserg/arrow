@@ -61,6 +61,12 @@ Concrete implementations
 .. doxygenclass:: arrow::fs::S3FileSystem
    :members:
 
+.. doxygenstruct:: arrow::fs::GCSOptions
+   :members:
+
+.. doxygenclass:: arrow::fs::GCSFileSystem
+   :members:
+
 .. doxygenstruct:: arrow::fs::HdfsOptions
    :members:
 

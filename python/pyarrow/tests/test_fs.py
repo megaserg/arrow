@@ -303,6 +303,42 @@ def subtree_s3fs(request, s3fs):
 
 
 @pytest.fixture
+def gcsfs(request, gcs_connection, gcs_server):
+    request.config.pyarrow.requires('gcs')
+    from pyarrow.fs import GCSFileSystem
+
+    host, port = gcs_connection
+    bucket = 'pyarrow-filesystem/'
+
+    fs = GCSFileSystem(
+        endpoint_override='{}:{}'.format(host, port),
+        scheme='http'
+    )
+    # TODO(megaserg): implement create_dir
+    # fs.create_dir(bucket)
+
+    return dict(
+        fs=fs,
+        pathfn=bucket.__add__,
+        allow_copy_file=False,
+        allow_move_dir=False,
+        allow_append_to_file=False,
+    )
+
+
+@pytest.fixture
+def subtree_gcsfs(request, gcsfs):
+    prefix = 'pyarrow-filesystem/prefix/'
+    return dict(
+        fs=SubTreeFileSystem(prefix, gcsfs['fs']),
+        pathfn=prefix.__add__,
+        allow_copy_file=True,
+        allow_move_dir=False,
+        allow_append_to_file=False,
+    )
+
+
+@pytest.fixture
 def hdfs(request, hdfs_connection):
     request.config.pyarrow.requires('hdfs')
     if not pa.have_libhdfs():
@@ -394,6 +430,10 @@ def py_fsspec_s3fs(request, s3_connection, s3_server):
     pytest.param(
         pytest.lazy_fixture('s3fs'),
         id='S3FileSystem'
+    ),
+    pytest.param(
+        pytest.lazy_fixture('gcsfs'),
+        id='GCSFileSystem'
     ),
     pytest.param(
         pytest.lazy_fixture('hdfs'),
@@ -1049,6 +1089,16 @@ def test_s3_options(monkeypatch):
         )
 
 
+@pytest.mark.gcs
+def test_gcs_options():
+    from pyarrow.fs import GCSFileSystem
+
+    fs = GCSFileSystem(region='us-central-1', scheme='http',
+                       endpoint_override='localhost:8999')
+    assert isinstance(fs, GCSFileSystem)
+    assert pickle.loads(pickle.dumps(fs)) == fs
+
+
 @pytest.mark.hdfs
 def test_hdfs_options(hdfs_connection):
     from pyarrow.fs import HadoopFileSystem
@@ -1169,6 +1219,26 @@ def test_filesystem_from_uri_s3(s3_connection, s3_server):
     [info] = fs.get_file_info([path])
     assert info.path == path
     assert info.type == FileType.Directory
+
+
+@pytest.mark.gcs
+def test_filesystem_from_uri_gcs(gcs_connection, gcs_server):
+    from pyarrow.fs import GCSFileSystem
+
+    host, port = gcs_connection
+
+    uri = "gs://mybucket/foo/bar?scheme=http&endpoint_override={}:{}" \
+        .format(host, port)
+
+    fs, path = FileSystem.from_uri(uri)
+    assert isinstance(fs, GCSFileSystem)
+    assert path == "mybucket/foo/bar"
+
+    # TODO(megaserg): implement CreateDir
+    # fs.create_dir(path)
+    # [info] = fs.get_file_info([path])
+    # assert info.path == path
+    # assert info.type == FileType.Directory
 
 
 def test_py_filesystem():
@@ -1350,6 +1420,17 @@ def test_s3_real_aws():
     fs = S3FileSystem(anonymous=True, region='us-east-2')
     entries = fs.get_file_info(FileSelector('ursa-labs-taxi-data'))
     assert len(entries) > 0
+
+
+# TODO(megaserg): make similar test
+# @pytest.mark.gcs
+# def test_gcs_real():
+#     # Exercise connection code with an GCP-backed GCS bucket.
+#     # This is a minimal integration check for ARROW-9261 and similar issues.
+#     from pyarrow.fs import GCSFileSystem
+#     fs = GCSFileSystem(anonymous=True)
+#     entries = fs.get_file_info(FileSelector('ursa-labs-taxi-data'))
+#     assert len(entries) > 0
 
 
 @pytest.mark.s3
