@@ -1324,6 +1324,9 @@ def test_write_to_dataset_no_partitions_s3fs(
         path, use_legacy_dataset, filesystem=fs)
 
 
+# TODO(megaserg): make similar tests
+
+
 @pytest.mark.pandas
 @parametrize_legacy_dataset_not_supported
 def test_write_to_dataset_with_partitions_and_custom_filenames(

@@ -92,6 +92,10 @@ cdef class GCSFileSystem(FileSystem):
         FileSystem.init(self, wrapped)
         self.gcsfs = <CGCSFileSystem*> wrapped.get()
 
+    @classmethod
+    def _reconstruct(cls, kwargs):
+        return cls(**kwargs)
+
     def __reduce__(self):
         cdef CGCSOptions opts = self.gcsfs.options()
         return (

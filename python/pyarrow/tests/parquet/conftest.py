@@ -85,3 +85,5 @@ def s3_example_fs(s3_connection, s3_server):
     fs.create_dir("mybucket")
 
     yield fs, uri, path
+
+# TODO(megaserg): make similar tests

@@ -72,7 +72,8 @@ class ARROW_EXPORT GCSFileSystem : public FileSystem {
  public:
   ~GCSFileSystem() override;
 
-  std::string type_name() const override { return "GCS"; }
+  std::string type_name() const override { return "gcs"; }
+
   GCSOptions options() const;
 
   bool Equals(const FileSystem& other) const override;

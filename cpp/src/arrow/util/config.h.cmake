@@ -35,6 +35,7 @@
 #define ARROW_PACKAGE_KIND "@ARROW_PACKAGE_KIND@"
 
 #cmakedefine ARROW_S3
+#cmakedefine ARROW_GCS
 #cmakedefine ARROW_USE_NATIVE_INT128
 
 #cmakedefine GRPCPP_PP_INCLUDE

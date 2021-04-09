@@ -382,6 +382,8 @@ class ObjectInputFile : public io::RandomAccessFile {
       return 0;
     }
 
+    std::cout << "Reading " << position << " + " << nbytes << " from " << path_.full_path << "\n";
+
     // Read the desired range of bytes
     gcs::ObjectReadStream stream = GetObjectRange(client_, path_, position, nbytes, out);
 
@@ -757,7 +759,9 @@ class GCSFileSystem::Impl {
 
 GCSFileSystem::GCSFileSystem(const GCSOptions& options) : impl_(new Impl{options}) {}
 
-GCSFileSystem::~GCSFileSystem() {}
+GCSFileSystem::~GCSFileSystem() {
+  std::cout << "GCS FS DESTRUCTED" << std::endl;
+}
 
 Result<std::shared_ptr<GCSFileSystem>> GCSFileSystem::Make(const GCSOptions& options) {
   RETURN_NOT_OK(CheckGCSInitialized());

@@ -98,6 +98,7 @@ jobs:
         env:
           # pyarrow config
           ARROW_S3: {{ arrow_s3 }}
+          ARROW_GCS: {{ arrow_gcs }}
           MACOSX_DEPLOYMENT_TARGET: {{ macos_deployment_target }}
           PYARROW_BUILD_VERBOSE: 1
           PYARROW_VERSION: {{ arrow.no_rc_version }}

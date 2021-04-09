@@ -324,6 +324,7 @@ The currently available classes are :class:`~pyarrow.fs.S3FileSystem` and
 :class:`~pyarrow.fs.HadoopFileSystem`. See the :ref:`filesystem` docs for more
 details.
 
+TODO(megaserg): Is GCS also supported?
 
 Reading from Minio
 ------------------

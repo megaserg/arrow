@@ -423,6 +423,7 @@ tasks:
       python_version: 3.6
       macos_deployment_target: 10.9
       arrow_s3: "OFF"
+      arrow_gcs: "OFF"
     artifacts:
       - pyarrow-{no_rc_version}-cp36-cp36m-macosx_10_9_x86_64.whl
 
@@ -433,6 +434,7 @@ tasks:
       python_version: 3.7
       macos_deployment_target: 10.9
       arrow_s3: "OFF"
+      arrow_gcs: "OFF"
     artifacts:
       - pyarrow-{no_rc_version}-cp37-cp37m-macosx_10_9_x86_64.whl
 
@@ -443,6 +445,7 @@ tasks:
       python_version: 3.8
       macos_deployment_target: 10.9
       arrow_s3: "OFF"
+      arrow_gcs: "OFF"
     artifacts:
       - pyarrow-{no_rc_version}-cp38-cp38-macosx_10_9_x86_64.whl
 
@@ -453,10 +456,11 @@ tasks:
       python_version: 3.9
       macos_deployment_target: 10.9
       arrow_s3: "OFF"
+      arrow_gcs: "OFF"
     artifacts:
       - pyarrow-{no_rc_version}-cp39-cp39-macosx_10_9_x86_64.whl
 
-  # enable S3 support from macOS 10.13 so we don't need to bundle curl, crypt and ssl
+  # enable S3 and GCS support from macOS 10.13 so we don't need to bundle curl, crypt and ssl
 
   wheel-osx-high-sierra-cp36m:
     ci: github
@@ -465,6 +469,7 @@ tasks:
       python_version: 3.6
       macos_deployment_target: 10.13
       arrow_s3: "ON"
+      arrow_gcs: "ON"
     artifacts:
       - pyarrow-{no_rc_version}-cp36-cp36m-macosx_10_13_x86_64.whl
 
@@ -475,6 +480,7 @@ tasks:
       python_version: 3.7
       macos_deployment_target: 10.13
       arrow_s3: "ON"
+      arrow_gcs: "ON"
     artifacts:
       - pyarrow-{no_rc_version}-cp37-cp37m-macosx_10_13_x86_64.whl
 
@@ -485,6 +491,7 @@ tasks:
       python_version: 3.8
       macos_deployment_target: 10.13
       arrow_s3: "ON"
+      arrow_gcs: "ON"
     artifacts:
       - pyarrow-{no_rc_version}-cp38-cp38-macosx_10_13_x86_64.whl
 
@@ -495,6 +502,7 @@ tasks:
       python_version: 3.9
       macos_deployment_target: 10.13
       arrow_s3: "ON"
+      arrow_gcs: "ON"
     artifacts:
       - pyarrow-{no_rc_version}-cp39-cp39-macosx_10_13_x86_64.whl
 

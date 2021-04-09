@@ -17,6 +17,7 @@
 
 #include <chrono>
 #include <cstring>
+#include <iostream>
 #include <sstream>
 #include <utility>
 
@@ -269,7 +270,9 @@ LocalFileSystem::LocalFileSystem() : options_(LocalFileSystemOptions::Defaults()
 LocalFileSystem::LocalFileSystem(const LocalFileSystemOptions& options)
     : options_(options) {}
 
-LocalFileSystem::~LocalFileSystem() {}
+LocalFileSystem::~LocalFileSystem() {
+  std::cout << "LOCAL FS DESTRUCTED" << std::endl;
+}
 
 Result<std::string> LocalFileSystem::NormalizePath(std::string path) {
   ARROW_ASSIGN_OR_RAISE(auto fn, PlatformFilename::FromString(path));
